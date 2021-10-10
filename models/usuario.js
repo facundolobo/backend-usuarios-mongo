@@ -17,10 +17,6 @@ const UsuarioSchema = Schema({
         required: [true, 'La contraseña es obligatoria']
     },
 
-    img:{
-        type: String
-    },
-
     rol:{
         type: String,
         required: true,
@@ -33,10 +29,6 @@ const UsuarioSchema = Schema({
         default: true
     },
 
-    google:{
-        type: Boolean,
-        default: false
-    }
 })
 //funcion para extraer y quitar los atributos q no quiero q se devuelvan 
 UsuarioSchema.methods.toJSON = function(){

@@ -14,7 +14,6 @@ class Server {
         this.paths = {
             auth:     '/auth',
             usuarios: '/usuarios',
-            procesos: '/procesos'
             
         }
 
@@ -55,7 +54,6 @@ class Server {
 
         // es un middleware condicional, si se solicita algo en esa dirrecion lo envia hacia router
         this.app.use(this.paths.usuarios, require('../routers/usuarios'));
-        this.app.use(this.paths.procesos, require('../routers/procesos'));
         this.app.use(this.paths.auth,     require('../routers/auth'));
 
 

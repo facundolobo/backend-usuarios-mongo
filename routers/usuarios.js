@@ -46,7 +46,7 @@ router.post('/',[
         
         check('correo').custom( emailExiste ), //middleware (se ejecutan antes de otra cosa) crea un registro 
         
-        //check('rol', 'No es un rol válido').isIn(['ADMIN_ROLE', 'USER_ROLE']),
+        // check('rol', 'No es un rol válido').isIn(['ADMIN_ROLE', 'USER_ROLE']),
         check('rol').custom( esRoleValido ), // es lo mismo (rol) => esRoleValido(rol) //es una valdiacion hecha por mi
         validarCampos //al final para validar los campos
 

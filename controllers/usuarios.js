@@ -1,7 +1,9 @@
 const { response, request } = require('express');
 const bcryptjs = require('bcryptjs');
 const Usuario = require('../models/usuario'); //importo el mdoelo
+const { generarJWT } = require('../helpers/generar-jwt');
 
+//obtener todos los usuarios
 const usuariosGet = async(req = request, res = response) => {
     
     // const {q, nombre='no name', apikey} = req.query; //obtener los aprametros opcionales 
@@ -22,25 +24,44 @@ const usuariosGet = async(req = request, res = response) => {
         usuarios
     })
 }
-
+//registrar usuario
 const usuariosPost = async(req, res = response) => {
+    
+    const {nombre, correo, password} = req.body; //obtenemos los datos que se envian    
 
-    const {nombre, correo, password, rol} = req.body; //obtenemos los datos que se envian    
-    const usuario = new Usuario({nombre, correo, password, rol}); //creo una instacia de mi modelo usuario
+    
+        try{
+ 
+            //grabar en BBDD
 
-    //Encriptar la contraseña
-    const salt = bcryptjs.genSaltSync(); //para la cantidad de veces q se encriptara , pro def son 10
-    usuario.password = bcryptjs.hashSync( password, salt );
+            let usuario=new Usuario({nombre, correo, password})
 
+                //encriptar contraseña
+                const salt = bcryptjs.genSaltSync();
 
-    //guadar en BD
-    await usuario.save();
+                usuario.password = bcryptjs.hashSync( password, salt ); //reescribimos el password
+                //--
 
-    res.json({
-        usuario  
-    })
+                await usuario.save();
+                //generar nuestro JWT
+                const token = await generarJWT(usuario.uid, usuario.nombre);
+            //--
+        
+        res.status(201).json({ //devolvera esto            
+            ok: true,
+            usuario,
+            token
+           
+        })
+    }catch(error){
+            console.log(error);
+            res.status(500).json({
+                ok: false,
+                msg: 'Por favor hable con el administrador'
+            })
+        }
 }
-
+//actualziar usuario
 const usuariosPut = async(req, res = response) => {
     
     const { id } = req.params; //obenemos el id enviado desde url
@@ -65,7 +86,7 @@ const usuariosPatch = (req, res = response) => {
         msg: 'patch API - controlador'
     })
 }
-
+//aliminar usuario
 const usuariosDelete = async(req, res = response) => {
     const { id } = req.params;
 
